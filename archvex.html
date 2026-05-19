@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Archvex — Occupational Health AI Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,500;0,700;0,800;0,900;1,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+
+:root{
+  --bg:#07080d;
+  --surface:#0d0f16;
+  --card:#141720;
+  --card-h:#1a1e2b;
+  --border:rgba(216,98,44,0.16);
+  --border-faint:rgba(255,255,255,0.055);
+  --accent:#d8622c;
+  --accent-b:#e8744a;
+  --accent-dim:rgba(216,98,44,0.12);
+  --data:#c8e030;
+  --data-dim:rgba(200,224,48,0.11);
+  --cool:#68aece;
+  --cool-dim:rgba(104,174,206,0.11);
+  --danger:#e04848;
+  --danger-dim:rgba(224,72,72,0.13);
+  --text:#eee8dc;
+  --text-2:#96a0b0;
+  --muted:#545a6a;
+  --faint:rgba(255,255,255,0.038);
+  --bc:'Barlow Condensed',sans-serif;
+  --mono:'Space Mono',monospace;
+  --serif:'Crimson Pro',serif;
+}
+
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;line-height:1.7;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;}
+
+.container{max-width:1120px;margin:0 auto;padding:0 2rem;}
+.sr-only{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.1rem 0;
+  transition:background .3s,border-color .3s;
+  border-bottom:1px solid transparent;
+}
+nav.s{
+  background:rgba(7,8,13,0.88);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-color:var(--border-faint);
+}
+.nav-in{display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{
+  font-family:var(--mono);font-size:16px;font-weight:700;
+  letter-spacing:.1em;color:var(--text);text-decoration:none;
+}
+.nav-logo b{color:var(--accent);}
+.nav-links{display:flex;align-items:center;gap:2.5rem;list-style:none;}
+.nav-links a{
+  font-family:var(--bc);font-size:13px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-2);text-decoration:none;transition:color .2s;
+}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{
+  font-family:var(--bc);font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);text-decoration:none;
+  border:1.5px solid var(--accent);padding:8px 20px;border-radius:2px;
+  transition:background .2s,color .2s;
+}
+.nav-cta:hover{background:var(--accent);color:var(--bg);}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;
+  position:relative;overflow:hidden;padding:8rem 2rem 5rem;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(216,98,44,.18) 1px,transparent 1px);
+  background-size:30px 30px;pointer-events:none;
+}
+.hero-vignette{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 20%,var(--bg) 80%);
+  pointer-events:none;
+}
+.hero-scan{
+  position:absolute;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--accent) 30%,var(--accent) 70%,transparent);
+  box-shadow:0 0 28px rgba(216,98,44,.45);
+  animation:scandn 7s ease-in-out infinite;
+  pointer-events:none;z-index:2;opacity:0;
+}
+@keyframes scandn{
+  0%{top:0;opacity:0;}5%{opacity:.65;}93%{opacity:.65;}100%{top:100%;opacity:0;}
+}
+.hero-c{position:relative;z-index:3;max-width:980px;}
+
+.hero-kicker{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.5rem;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+}
+.hero-kicker::before,.hero-kicker::after{
+  content:'';display:inline-block;width:44px;height:1px;background:var(--accent);opacity:.5;
+}
+.hero-wm{
+  font-family:var(--bc);font-size:clamp(80px,15vw,160px);font-weight:900;
+  letter-spacing:-.025em;line-height:.9;color:var(--text);margin-bottom:1.6rem;
+}
+.hero-wm .vx{color:var(--accent);}
+.hero-sub{
+  font-family:var(--serif);font-size:clamp(16px,2vw,20px);
+  color:var(--text-2);max-width:640px;margin:0 auto 3.2rem;line-height:1.65;
+}
+.hero-stats{
+  display:flex;justify-content:center;gap:3.5rem;margin-bottom:3rem;flex-wrap:wrap;
+}
+.hstat-val{
+  font-family:var(--bc);font-size:44px;font-weight:800;
+  color:var(--data);line-height:1;letter-spacing:-.02em;
+}
+.hstat-lbl{
+  font-family:var(--mono);font-size:9.5px;color:var(--muted);
+  letter-spacing:.12em;text-transform:uppercase;margin-top:5px;
+}
+.hero-btns{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;}
+.btn-p{
+  font-family:var(--bc);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--accent);color:var(--bg);padding:14px 38px;border-radius:2px;
+  text-decoration:none;transition:background .2s,transform .15s;border:none;cursor:pointer;
+}
+.btn-p:hover{background:var(--accent-b);transform:translateY(-1px);}
+.btn-g{
+  font-family:var(--bc);font-size:14px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:transparent;color:var(--text);padding:14px 38px;border-radius:2px;
+  text-decoration:none;border:1px solid var(--border-faint);transition:border-color .2s,transform .15s;cursor:pointer;
+}
+.btn-g:hover{border-color:rgba(255,255,255,.18);transform:translateY(-1px);}
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  z-index:3;display:flex;flex-direction:column;align-items:center;gap:7px;
+}
+.scroll-hint span{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.scroll-bar{width:1px;height:32px;background:linear-gradient(to bottom,var(--muted),transparent);animation:spulse 2s ease-in-out infinite;}
+@keyframes spulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* ─── TICKER ─── */
+.ticker-wrap{
+  background:var(--surface);border-top:1px solid var(--border-faint);
+  border-bottom:1px solid var(--border-faint);padding:11px 0;overflow:hidden;white-space:nowrap;
+}
+.ticker-track{display:inline-block;animation:tkr 32s linear infinite;}
+.ticker-track:hover{animation-play-state:paused;}
+.ti-item{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+  color:var(--muted);margin-right:3.5rem;
+}
+.ti-item .d{width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.ti-item strong{color:var(--text);font-weight:700;}
+@keyframes tkr{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ─── SECTIONS ─── */
+section{padding:7rem 0;}
+.dark{background:var(--surface);}
+.darker{background:var(--bg);}
+
+.stag{display:contents;}
+
+/* section meta */
+.s-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.25rem;
+}
+.s-tag::before{content:'';display:inline-block;width:16px;height:1.5px;background:var(--accent);}
+
+/* ─── PROBLEM ─── */
+.prob-header{margin-bottom:4rem;}
+.prob-header h2{
+  font-family:var(--bc);font-size:clamp(42px,6vw,68px);font-weight:900;
+  line-height:1.05;letter-spacing:-.01em;color:var(--text);max-width:720px;
+}
+.prob-header h2 em{font-style:italic;color:var(--accent);font-family:var(--serif);}
+.prob-lead{
+  font-family:var(--serif);font-size:19px;color:var(--text-2);
+  max-width:700px;line-height:1.75;margin-top:1.5rem;
+}
+.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;margin-top:4rem;}
+.pc{
+  background:var(--card);padding:2.25rem 2rem;position:relative;
+  overflow:hidden;transition:background .2s;
+}
+.pc:hover{background:var(--card-h);}
+.pc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.pc.c1::before{background:var(--accent);}
+.pc.c2::before{background:var(--danger);}
+.pc.c3::before{background:var(--cool);}
+.pc-bg{
+  position:absolute;right:.75rem;bottom:-16px;
+  font-family:var(--bc);font-size:100px;font-weight:900;
+  color:rgba(255,255,255,.025);line-height:1;pointer-events:none;
+}
+.pc-case{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.15em;
+  text-transform:uppercase;margin-bottom:.9rem;
+}
+.c1 .pc-case{color:var(--accent);}
+.c2 .pc-case{color:var(--danger);}
+.c3 .pc-case{color:var(--cool);}
+.pc-title{
+  font-family:var(--bc);font-size:24px;font-weight:800;color:var(--text);
+  margin-bottom:.7rem;line-height:1.2;
+}
+.pc-body{font-family:var(--serif);font-size:15px;color:var(--text-2);line-height:1.72;}
+
+/* ─── PRODUCT ─── */
+.steps-hd{margin-bottom:5rem;}
+.steps-hd h2{
+  font-family:var(--bc);font-size:clamp(42px,5.5vw,64px);font-weight:900;
+  color:var(--text);letter-spacing:-.01em;line-height:1.05;
+}
+.steps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5px;}
+.sc{
+  background:var(--card);padding:2.75rem 2.5rem;position:relative;
+  overflow:hidden;transition:background .2s;
+}
+.sc:hover{background:var(--card-h);}
+.sc-bgn{
+  position:absolute;right:-12px;bottom:-20px;
+  font-family:var(--bc);font-size:180px;font-weight:900;
+  color:rgba(255,255,255,.022);line-height:1;pointer-events:none;
+}
+.sc-head{display:flex;align-items:flex-start;gap:.9rem;margin-bottom:1.25rem;}
+.sc-n{
+  font-family:var(--mono);font-size:10px;color:var(--accent);
+  letter-spacing:.1em;background:var(--accent-dim);
+  padding:4px 10px;border-radius:2px;flex-shrink:0;margin-top:3px;
+}
+.sc-title{
+  font-family:var(--bc);font-size:28px;font-weight:800;
+  color:var(--text);line-height:1.15;
+}
+.sc-body{
+  font-family:var(--serif);font-size:15.5px;color:var(--text-2);
+  line-height:1.72;max-width:440px;
+}
+.sc-hl{
+  display:inline-block;margin-top:1.25rem;
+  font-family:var(--mono);font-size:11px;color:var(--data);
+  letter-spacing:.07em;background:var(--data-dim);padding:5px 12px;border-radius:2px;
+}
+
+/* ─── ANALYTICS ─── */
+.an-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.an-text h2{
+  font-family:var(--bc);font-size:clamp(38px,5vw,58px);font-weight:900;
+  color:var(--text);letter-spacing:-.01em;margin-bottom:1.25rem;line-height:1.1;
+}
+.an-text p{font-family:var(--serif);font-size:16px;color:var(--text-2);line-height:1.75;margin-bottom:.9rem;}
+.alert-box{
+  background:var(--danger-dim);
+  border:1px solid rgba(224,72,72,.28);border-left:3px solid var(--danger);
+  padding:.9rem 1.2rem;margin-top:1.5rem;border-radius:0 4px 4px 0;
+}
+.ab-lbl{
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--danger);margin-bottom:.35rem;
+}
+.alert-box p{
+  font-family:var(--mono);font-size:11.5px;color:rgba(240,190,190,.85);line-height:1.55;margin:0;
+}
+.an-viz{
+  background:var(--card);border:1px solid var(--border-faint);
+  border-radius:4px;padding:1.4rem;
+}
+.viz-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;}
+.viz-ttl{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.viz-live{
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;color:var(--data);letter-spacing:.08em;
+}
+.viz-live::before{
+  content:'';width:5px;height:5px;border-radius:50%;background:var(--data);
+  animation:lpulse 2s infinite;
+}
+@keyframes lpulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.75);}}
+
+/* ─── WHY NOW ─── */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;margin-top:4rem;}
+.wc{background:var(--card);padding:2rem 1.75rem;transition:background .2s;}
+.wc:hover{background:var(--card-h);}
+.wc-icon{
+  width:42px;height:42px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.25rem;font-size:20px;
+}
+.w1 .wc-icon{background:var(--accent-dim);color:var(--accent);}
+.w2 .wc-icon{background:var(--cool-dim);color:var(--cool);}
+.w3 .wc-icon{background:var(--data-dim);color:var(--data);}
+.wc-title{font-family:var(--bc);font-size:22px;font-weight:800;color:var(--text);margin-bottom:.6rem;}
+.wc-body{font-family:var(--serif);font-size:15px;color:var(--text-2);line-height:1.7;}
+
+/* ─── WHO BUYS ─── */
+.buy-wrap{display:grid;grid-template-columns:5fr 7fr;gap:1.5px;margin-top:4rem;}
+.buy-profile{background:var(--accent);padding:2.75rem 2.5rem;position:relative;overflow:hidden;}
+.buy-profile::before{
+  content:'BUYER';position:absolute;bottom:-20px;right:-8px;
+  font-family:var(--bc);font-size:120px;font-weight:900;color:rgba(0,0,0,.1);line-height:1;
+}
+.bp-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(7,8,13,.65);margin-bottom:.9rem;display:block;
+}
+.bp-name{
+  font-family:var(--bc);font-size:30px;font-weight:900;color:var(--bg);
+  margin-bottom:1rem;line-height:1.1;
+}
+.bp-desc{font-family:var(--serif);font-size:15.5px;color:rgba(7,8,13,.72);line-height:1.7;}
+.spread-cards{background:var(--card);padding:2.75rem 2.5rem;}
+.sp-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1.5rem;display:block;
+}
+.sp-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1rem 0;border-bottom:1px solid var(--border-faint);
+}
+.sp-item:last-child{border-bottom:none;padding-bottom:0;}
+.sp-arr{font-family:var(--mono);font-size:12px;color:var(--accent);flex-shrink:0;margin-top:1px;}
+.sp-txt{font-family:var(--serif);font-size:15px;color:var(--text-2);line-height:1.65;}
+.sp-txt strong{color:var(--text);font-weight:600;}
+
+/* ─── MOAT ─── */
+.moat-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.moat-txt h2{
+  font-family:var(--bc);font-size:clamp(38px,5vw,58px);font-weight:900;
+  color:var(--text);margin-bottom:1.25rem;line-height:1.1;letter-spacing:-.01em;
+}
+.moat-txt p{font-family:var(--serif);font-size:16px;color:var(--text-2);line-height:1.75;margin-bottom:.9rem;}
+.moat-list{margin-top:2rem;display:flex;flex-direction:column;gap:.9rem;}
+.mi{display:flex;gap:.9rem;align-items:flex-start;}
+.mi-badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  padding:4px 10px;border-radius:2px;flex-shrink:0;margin-top:2px;white-space:nowrap;
+}
+.mb-d{background:var(--data-dim);color:var(--data);}
+.mb-n{background:var(--cool-dim);color:var(--cool);}
+.mb-o{background:var(--accent-dim);color:var(--accent);}
+.mi-txt{font-family:var(--serif);font-size:15px;color:var(--text-2);line-height:1.65;}
+.mi-txt strong{color:var(--text);}
+
+/* ─── WOW ─── */
+.wow-sec{background:var(--text);padding:8rem 0;}
+.wow-in{max-width:840px;margin:0 auto;text-align:center;padding:0 2rem;}
+.wow-tag{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent);display:block;margin-bottom:2.25rem;
+}
+.wow-q{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(22px,3.5vw,34px);color:var(--bg);line-height:1.5;
+  margin-bottom:2.5rem;position:relative;
+}
+.wow-q::before{
+  content:'\201C';font-size:110px;color:rgba(7,8,13,.065);
+  position:absolute;left:-1rem;top:-1.5rem;line-height:1;font-style:normal;
+}
+.wow-ctx{font-family:var(--serif);font-size:16px;color:rgba(7,8,13,.58);line-height:1.78;max-width:660px;margin:0 auto;}
+.wow-ctx strong{color:var(--accent);font-family:var(--bc);font-size:20px;font-weight:800;letter-spacing:.02em;}
+
+/* ─── FOUNDER ─── */
+.fdr-wrap{display:grid;grid-template-columns:1fr 2fr;gap:4.5rem;align-items:start;}
+.fdr-card{
+  background:var(--card);border:1px solid var(--border-faint);
+  border-radius:4px;padding:2.75rem 2rem;text-align:center;
+}
+.fdr-init{
+  width:76px;height:76px;border-radius:50%;
+  background:var(--accent-dim);border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1.25rem;
+  font-family:var(--bc);font-size:30px;font-weight:900;color:var(--accent);letter-spacing:.05em;
+}
+.fdr-name{font-family:var(--bc);font-size:30px;font-weight:900;color:var(--text);letter-spacing:.01em;margin-bottom:.25rem;}
+.fdr-role{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;}
+.fdr-co{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.08em;}
+.fdr-mission h2{
+  font-family:var(--bc);font-size:clamp(38px,4.5vw,56px);font-weight:900;
+  color:var(--text);margin-bottom:1.25rem;line-height:1.1;letter-spacing:-.01em;
+}
+.fdr-mission p{font-family:var(--serif);font-size:16.5px;color:var(--text-2);line-height:1.78;margin-bottom:1.1rem;}
+.fdr-mission em{font-style:italic;color:var(--muted);}
+.fdr-cta{margin-top:2rem;}
+
+/* ─── FOOTER ─── */
+footer{background:var(--surface);border-top:1px solid var(--border-faint);padding:2.75rem 0;}
+.ft-in{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.ft-logo{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text);letter-spacing:.1em;}
+.ft-logo b{color:var(--accent);}
+.ft-copy{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.06em;}
+.ft-links{display:flex;gap:1.5rem;}
+.ft-links a{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--muted);text-decoration:none;transition:color .2s;}
+.ft-links a:hover{color:var(--text);}
+
+/* ─── FADE-UP ANIMATIONS ─── */
+.fu{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
+.fu.in{opacity:1;transform:translateY(0);}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  .prob-grid,.steps-grid,.an-wrap,.why-grid,.buy-wrap,.moat-wrap,.fdr-wrap{grid-template-columns:1fr;}
+  .nav-links{display:none;}
+  .hero-wm{font-size:clamp(60px,18vw,100px);}
+}
+@media(max-width:600px){
+  .hero-stats{gap:2rem;}
+  .fdr-wrap{gap:2.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="container">
+    <div class="nav-in">
+      <a href="#" class="nav-logo">ARCH<b>V</b>EX</a>
+      <ul class="nav-links">
+        <li><a href="#problem">Problem</a></li>
+        <li><a href="#product">Product</a></li>
+        <li><a href="#analytics">Analytics</a></li>
+        <li><a href="#team">Team</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Request Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-scan"></div>
+  <div class="hero-c">
+    <div class="hero-kicker">Occupational Health AI Platform</div>
+    <h1 class="hero-wm">ARCH<span class="vx">V</span>EX</h1>
+    <p class="hero-sub">
+      The AI that reads your clinic's EMR, drafts the FFD letter in 90 seconds,
+      and catches the injury cluster before it becomes a $340,000 lawsuit.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <div class="hstat-val">90s</div>
+        <div class="hstat-lbl">FFD letter generation</div>
+      </div>
+      <div>
+        <div class="hstat-val">$42B</div>
+        <div class="hstat-lbl">Workers' comp market</div>
+      </div>
+      <div>
+        <div class="hstat-val">10hrs</div>
+        <div class="hstat-lbl">Documentation saved daily</div>
+      </div>
+    </div>
+    <div class="hero-btns">
+      <a href="#product" class="btn-p">See how it works</a>
+      <a href="#problem" class="btn-g">Read the brief</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-bar"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ti-item"><span class="d"></span>Avg physician spends <strong>&nbsp;10+ hours/day&nbsp;</strong> on documentation</span>
+    <span class="ti-item"><span class="d"></span>1 in 4 workplace injuries are <strong>&nbsp;pattern-preventable&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>FFD letter: <strong>&nbsp;20 min manually&nbsp;</strong> vs <strong>&nbsp;90 seconds&nbsp;</strong> with Archvex</span>
+    <span class="ti-item"><span class="d"></span>Workers' comp costs US employers <strong>&nbsp;$42B annually&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>Zero occ-health clinics have a real-time <strong>&nbsp;employer injury portal&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>Pattern detection at injury <strong>&nbsp;#2, not #4&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>Avg physician spends <strong>&nbsp;10+ hours/day&nbsp;</strong> on documentation</span>
+    <span class="ti-item"><span class="d"></span>1 in 4 workplace injuries are <strong>&nbsp;pattern-preventable&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>FFD letter: <strong>&nbsp;20 min manually&nbsp;</strong> vs <strong>&nbsp;90 seconds&nbsp;</strong> with Archvex</span>
+    <span class="ti-item"><span class="d"></span>Workers' comp costs US employers <strong>&nbsp;$42B annually&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>Zero occ-health clinics have a real-time <strong>&nbsp;employer injury portal&nbsp;</strong></span>
+    <span class="ti-item"><span class="d"></span>Pattern detection at injury <strong>&nbsp;#2, not #4&nbsp;</strong></span>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="dark" id="problem">
+  <div class="container">
+    <div class="prob-header fu">
+      <div class="s-tag">Case File · 001</div>
+      <h2>Occupational health runs on<br><em>fax machines and phone calls.</em></h2>
+      <p class="prob-lead">
+        A physician sees 30 patients a day. Every one needs a legally-structured fitness-for-duty letter.
+        That's 10 hours of paperwork alongside actual medicine — while the employer HR manager calls every few hours asking "is my worker cleared?"
+      </p>
+    </div>
+    <div class="prob-grid">
+      <div class="pc c1 fu" style="transition-delay:.05s">
+        <div class="pc-bg">01</div>
+        <div class="pc-case">Case · FFD-001</div>
+        <h3 class="pc-title">20 Minutes Per Letter</h3>
+        <p class="pc-body">Every fitness-for-duty assessment means pulling the employer's job description, cross-referencing the injury note, and drafting a legal-grade document from scratch. Multiply by 30 patients. That's your physician's entire afternoon — gone to documentation.</p>
+      </div>
+      <div class="pc c2 fu" style="transition-delay:.12s">
+        <div class="pc-bg">02</div>
+        <div class="pc-case">Case · PAT-002</div>
+        <h3 class="pc-title">The Pattern Nobody Sees</h3>
+        <p class="pc-body">Four lower-back injuries. Same warehouse. Same 6am shift. Six consecutive weeks. The data sits in the EMR — unqueried — until the $340,000 workers' comp claim lands and the OSHA inspector shows up at the door.</p>
+      </div>
+      <div class="pc c3 fu" style="transition-delay:.19s">
+        <div class="pc-bg">03</div>
+        <div class="pc-case">Case · EMP-003</div>
+        <h3 class="pc-title">Zero Employer Visibility</h3>
+        <p class="pc-body">The employer HR manager has no portal, no status feed, no dashboard. She has a phone number. The clinic coordinator spends 40% of her day answering calls that a real-time portal would eliminate in full.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="darker" id="product">
+  <div class="container">
+    <div class="steps-hd fu">
+      <div class="s-tag">The Product</div>
+      <h2>Four steps.<br>One workflow.</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="sc fu" style="transition-delay:.04s">
+        <div class="sc-bgn">01</div>
+        <div class="sc-head">
+          <span class="sc-n">Step 01</span>
+          <h3 class="sc-title">Clinical note<br>ingested instantly</h3>
+        </div>
+        <p class="sc-body">Archvex connects to your existing EMR — doesn't matter which one. The moment a SOAP note is finalized, the AI reads it and maps the injury against 800+ employer job demand profiles already loaded for that account. Zero manual data entry.</p>
+        <span class="sc-hl">↳ No rekeying, no copy-paste</span>
+      </div>
+      <div class="sc fu" style="transition-delay:.1s">
+        <div class="sc-bgn">02</div>
+        <div class="sc-head">
+          <span class="sc-n">Step 02</span>
+          <h3 class="sc-title">FFD letter<br>writes itself</h3>
+        </div>
+        <p class="sc-body">In under 90 seconds, Archvex drafts a legally-structured fitness-for-duty assessment with specific work restrictions, return-to-work timeline, and duration — pre-populated for the physician. Review it, adjust one line if needed, click approve.</p>
+        <span class="sc-hl">↳ 90 seconds vs. 20 minutes</span>
+      </div>
+      <div class="sc fu" style="transition-delay:.16s">
+        <div class="sc-bgn">03</div>
+        <div class="sc-head">
+          <span class="sc-n">Step 03</span>
+          <h3 class="sc-title">Employer portal<br>updates live</h3>
+        </div>
+        <p class="sc-body">The signed FFD letter routes immediately to the employer's Archvex portal. HR gets a push notification. No phone call needed. The portal shows every active employee case — cleared, restricted, or pending — updated in real time.</p>
+        <span class="sc-hl">↳ The phone call that stops happening</span>
+      </div>
+      <div class="sc fu" style="transition-delay:.22s">
+        <div class="sc-bgn">04</div>
+        <div class="sc-head">
+          <span class="sc-n">Step 04</span>
+          <h3 class="sc-title">Pattern engine<br>runs silently</h3>
+        </div>
+        <p class="sc-body">Every logged injury feeds the analytics layer. When Archvex detects a cluster — same employer, same body part, same shift — it fires an alert to the clinic director and the employer's safety officer. At injury number two. Not four.</p>
+        <span class="sc-hl">↳ Prevention, not documentation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYTICS -->
+<section class="dark" id="analytics">
+  <div class="container">
+    <div class="an-wrap">
+      <div class="an-text fu">
+        <div class="s-tag">Pattern Engine</div>
+        <h2>Catch the cluster.<br>Kill the lawsuit.</h2>
+        <p>Most occupational health data dies in an EMR field nobody queries. Archvex runs a continuous pattern engine across every employer account — watching for injury clustering by body part, department, shift rotation, and equipment type.</p>
+        <p>The moment a statistically significant cluster forms, the safety officer receives an automated briefing with a specific causal hypothesis: which bay, which motion, which shift. Not "you have a back problem." Specificity that actually drives a fix.</p>
+        <div class="alert-box">
+          <div class="ab-lbl">⚠ Pattern Alert · Braeburn Logistics · Bay 7</div>
+          <p>3 lower-back injuries detected · 6am shift · Weeks 4–6<br>Cluster confidence: HIGH · Causal hypothesis: repetitive lateral rotation<br>Recommended action: ergonomic audit of Bay 7 equipment</p>
+        </div>
+      </div>
+      <div class="an-viz fu" style="transition-delay:.08s">
+        <div class="viz-hd">
+          <span class="viz-ttl">Injury cluster visualization · Q3</span>
+          <span class="viz-live">Live</span>
+        </div>
+        <svg viewBox="0 0 460 275" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;" aria-label="Scatter plot showing injury cluster detection at Braeburn Logistics weeks 4-6">
+          <!-- grid verticals -->
+          <line x1="58" y1="18" x2="58" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="110" y1="18" x2="110" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="162" y1="18" x2="162" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="214" y1="18" x2="214" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="266" y1="18" x2="266" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="318" y1="18" x2="318" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="370" y1="18" x2="370" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <line x1="422" y1="18" x2="422" y2="215" stroke="#fff" stroke-opacity=".04" stroke-width="1"/>
+          <!-- grid horizontals -->
+          <line x1="58" y1="58" x2="435" y2="58" stroke="#fff" stroke-opacity=".03" stroke-width="1"/>
+          <line x1="58" y1="108" x2="435" y2="108" stroke="#fff" stroke-opacity=".03" stroke-width="1"/>
+          <line x1="58" y1="158" x2="435" y2="158" stroke="#fff" stroke-opacity=".03" stroke-width="1"/>
+          <line x1="58" y1="208" x2="435" y2="208" stroke="#fff" stroke-opacity=".03" stroke-width="1"/>
+          <!-- axes -->
+          <line x1="58" y1="18" x2="58" y2="218" stroke="#545a6a" stroke-width="1"/>
+          <line x1="53" y1="218" x2="438" y2="218" stroke="#545a6a" stroke-width="1"/>
+          <!-- x-axis labels -->
+          <text x="58" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk1</text>
+          <text x="110" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk2</text>
+          <text x="162" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk3</text>
+          <text x="214" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk4</text>
+          <text x="266" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk5</text>
+          <text x="318" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk6</text>
+          <text x="370" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk7</text>
+          <text x="422" y="234" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="middle">Wk8</text>
+          <!-- y-axis labels -->
+          <text x="50" y="62" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="end">Emp A</text>
+          <text x="50" y="112" font-family="Space Mono,monospace" font-size="9" fill="#e04848" text-anchor="end">Emp B</text>
+          <text x="50" y="162" font-family="Space Mono,monospace" font-size="9" fill="#545a6a" text-anchor="end">Emp C</text>
+          <!-- Emp A: scattered normal -->
+          <circle cx="84" cy="56" r="5" fill="#68aece" opacity=".75"/>
+          <circle cx="188" cy="60" r="5" fill="#68aece" opacity=".75"/>
+          <circle cx="344" cy="54" r="5" fill="#68aece" opacity=".75"/>
+          <!-- Emp C: scattered normal -->
+          <circle cx="124" cy="160" r="5" fill="#68aece" opacity=".75"/>
+          <circle cx="292" cy="155" r="5" fill="#68aece" opacity=".75"/>
+          <circle cx="400" cy="162" r="5" fill="#68aece" opacity=".75"/>
+          <!-- Emp B: one normal then cluster Wk4-7 -->
+          <circle cx="95" cy="108" r="5" fill="#68aece" opacity=".75"/>
+          <!-- cluster points -->
+          <circle cx="214" cy="104" r="7" fill="#e04848" opacity=".9"/>
+          <circle cx="266" cy="112" r="7" fill="#e04848" opacity=".9"/>
+          <circle cx="318" cy="106" r="7" fill="#e04848" opacity=".9"/>
+          <circle cx="370" cy="110" r="7" fill="#e04848" opacity=".9"/>
+          <!-- cluster ring -->
+          <ellipse cx="292" cy="108" rx="96" ry="28" fill="none" stroke="#e04848" stroke-width="1.5" stroke-dasharray="5 3" opacity=".55"/>
+          <!-- alert arrow + label -->
+          <line x1="214" y1="78" x2="228" y2="92" stroke="#e04848" stroke-width="1" opacity=".8"/>
+          <circle cx="211" cy="75" r="3" fill="#e04848"/>
+          <text x="211" y="70" font-family="Space Mono,monospace" font-size="8" fill="#e04848" text-anchor="middle">Alert fired</text>
+          <!-- legend -->
+          <circle cx="65" cy="255" r="4" fill="#68aece"/>
+          <text x="74" y="259" font-family="Space Mono,monospace" font-size="8" fill="#545a6a">Normal injury</text>
+          <circle cx="155" cy="255" r="4" fill="#e04848"/>
+          <text x="164" y="259" font-family="Space Mono,monospace" font-size="8" fill="#545a6a">Cluster injury</text>
+          <line x1="248" y1="255" x2="260" y2="255" stroke="#e04848" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="264" y="259" font-family="Space Mono,monospace" font-size="8" fill="#545a6a">Archvex alert boundary</text>
+          <defs>
+            <marker id="ar" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="rgba(255,255,255,0.15)"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY NOW -->
+<section class="darker" id="why">
+  <div class="container">
+    <div class="fu" style="margin-bottom:4rem;">
+      <div class="s-tag">Why Now</div>
+      <h2 style="font-family:var(--bc);font-size:clamp(42px,5.5vw,64px);font-weight:900;color:var(--text);letter-spacing:-.01em;max-width:580px;line-height:1.05;">
+        Three things changed.<br>All at once.
+      </h2>
+    </div>
+    <div class="why-grid">
+      <div class="wc w1 fu" style="transition-delay:.04s">
+        <div class="wc-icon"><i class="ti ti-cpu" aria-hidden="true"></i></div>
+        <h3 class="wc-title">LLMs Read Clinical Prose</h3>
+        <p class="wc-body">Three years ago, turning a physician's free-text SOAP note into a legally-structured FFD document required a human coder and a compliance officer. Today, language models do it in 90 seconds at fractions of a cent per letter.</p>
+      </div>
+      <div class="wc w2 fu" style="transition-delay:.1s">
+        <div class="wc-icon"><i class="ti ti-building-hospital" aria-hidden="true"></i></div>
+        <h3 class="wc-title">Employers Expect Portals</h3>
+        <p class="wc-body">Post-COVID digitization pushed HR teams into real-time dashboards for everything — except occupational health. That gap is now embarrassing to employers and increasingly a vendor selection criterion.</p>
+      </div>
+      <div class="wc w3 fu" style="transition-delay:.16s">
+        <div class="wc-icon"><i class="ti ti-chart-dots" aria-hidden="true"></i></div>
+        <h3 class="wc-title">Insurers Want Data</h3>
+        <p class="wc-body">Workers' comp carriers now offer premium discounts for employers who prove proactive injury monitoring. Archvex generates the audit trail that makes those discounts unlock. The product pays for itself in reduced premiums.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO BUYS -->
+<section class="dark" id="customers">
+  <div class="container">
+    <div class="fu" style="margin-bottom:4rem;">
+      <div class="s-tag">Go-to-Market</div>
+      <h2 style="font-family:var(--bc);font-size:clamp(42px,5.5vw,64px);font-weight:900;color:var(--text);letter-spacing:-.01em;line-height:1.05;">
+        Who buys first.<br>How it spreads.
+      </h2>
+    </div>
+    <div class="buy-wrap">
+      <div class="buy-profile fu">
+        <span class="bp-tag">First Customer</span>
+        <div class="bp-name">Independent Occ Health Medical Director</div>
+        <p class="bp-desc">3–8 physicians. 200–400 employer accounts. A front-desk coordinator spending 40% of her day answering status calls and faxing FFD letters. This director has tried SharePoint folders and custom Word templates. Neither worked. She wants something that turns on this week — not an 18-month EMR integration project.</p>
+      </div>
+      <div class="spread-cards fu" style="transition-delay:.08s">
+        <span class="sp-tag">How the network spreads</span>
+        <div class="sp-item">
+          <span class="sp-arr">→</span>
+          <p class="sp-txt"><strong>Employers love the portal.</strong> They start asking: "Can our other clinic do this?" Archvex spreads laterally through employer relationships before the clinic even asks us to expand.</p>
+        </div>
+        <div class="sp-item">
+          <span class="sp-arr">→</span>
+          <p class="sp-txt"><strong>Employers start requiring it.</strong> Companies with 5+ clinic relationships add "Archvex-compatible portal" to their vendor contract. Clinics adopt or lose the account.</p>
+        </div>
+        <div class="sp-item">
+          <span class="sp-arr">→</span>
+          <p class="sp-txt"><strong>Multi-site groups get the view.</strong> Regional occ-health chains get a cross-location dashboard — all employers, all injury trends, all clinics. One screen.</p>
+        </div>
+        <div class="sp-item">
+          <span class="sp-arr">→</span>
+          <p class="sp-txt"><strong>Insurers close the loop.</strong> Workers' comp carriers offer premium reductions to employers on Archvex-integrated clinics. The product pays for itself — and the network locks in permanently.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOAT -->
+<section class="darker" id="moat">
+  <div class="container">
+    <div class="moat-wrap">
+      <div class="moat-txt fu">
+        <div class="s-tag">Defensibility</div>
+        <h2>The moat isn't<br>the AI.</h2>
+        <p>Anyone can replicate the language model layer in six months. That's not what makes Archvex defensible. The real protection comes from three compounding layers that each take years to rebuild.</p>
+        <div class="moat-list">
+          <div class="mi">
+            <span class="mi-badge mb-d">Data</span>
+            <p class="mi-txt"><strong>800+ employer job demand profiles</strong> — built one by one, mapped to clinical injury codes. A competitor starts from zero and takes years.</p>
+          </div>
+          <div class="mi">
+            <span class="mi-badge mb-n">Network</span>
+            <p class="mi-txt"><strong>Bilateral lock-in.</strong> Employers demand the portal. Clinics can't drop Archvex without breaking employer relationships. Both sides trap each other — and Archvex in the middle.</p>
+          </div>
+          <div class="mi">
+            <span class="mi-badge mb-o">Intelligence</span>
+            <p class="mi-txt"><strong>Industry-specific pattern models</strong> that sharpen with every injury logged. After 18 months of cold-storage warehouse data, Archvex's predictions for that vertical are unreplicable without those 18 months.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- flywheel SVG -->
+      <div class="fu" style="transition-delay:.1s;display:flex;justify-content:center;align-items:center;">
+        <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:380px;display:block;" aria-label="Archvex data flywheel diagram">
+          <circle cx="180" cy="180" r="155" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <circle cx="180" cy="180" r="105" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+          <!-- center -->
+          <circle cx="180" cy="180" r="50" fill="#141720" stroke="rgba(216,98,44,.35)" stroke-width="1.5"/>
+          <text x="180" y="175" font-family="Barlow Condensed,sans-serif" font-size="15" font-weight="900" fill="#d8622c" text-anchor="middle" letter-spacing=".05em">ARCH</text>
+          <text x="180" y="194" font-family="Barlow Condensed,sans-serif" font-size="15" font-weight="900" fill="#d8622c" text-anchor="middle" letter-spacing=".05em">VEX</text>
+          <!-- nodes at 5 positions -->
+          <!-- top 270° -->
+          <circle cx="180" cy="25" r="28" fill="#141720" stroke="rgba(200,224,48,.28)" stroke-width="1"/>
+          <text x="180" y="21" font-family="Space Mono,monospace" font-size="8" fill="#c8e030" text-anchor="middle">EMR</text>
+          <text x="180" y="33" font-family="Space Mono,monospace" font-size="8" fill="#c8e030" text-anchor="middle">Data</text>
+          <!-- ~342° top-right -->
+          <circle cx="324" cy="83" r="28" fill="#141720" stroke="rgba(104,174,206,.28)" stroke-width="1"/>
+          <text x="324" y="79" font-family="Space Mono,monospace" font-size="8" fill="#68aece" text-anchor="middle">FFD</text>
+          <text x="324" y="91" font-family="Space Mono,monospace" font-size="8" fill="#68aece" text-anchor="middle">Output</text>
+          <!-- ~54° bottom-right -->
+          <circle cx="324" cy="277" r="28" fill="#141720" stroke="rgba(104,174,206,.28)" stroke-width="1"/>
+          <text x="324" y="273" font-family="Space Mono,monospace" font-size="8" fill="#68aece" text-anchor="middle">Employer</text>
+          <text x="324" y="285" font-family="Space Mono,monospace" font-size="8" fill="#68aece" text-anchor="middle">Network</text>
+          <!-- bottom 90° -->
+          <circle cx="180" cy="335" r="28" fill="#141720" stroke="rgba(200,224,48,.28)" stroke-width="1"/>
+          <text x="180" y="331" font-family="Space Mono,monospace" font-size="8" fill="#c8e030" text-anchor="middle">Pattern</text>
+          <text x="180" y="343" font-family="Space Mono,monospace" font-size="8" fill="#c8e030" text-anchor="middle">Engine</text>
+          <!-- left 180° -->
+          <circle cx="36" cy="180" r="28" fill="#141720" stroke="rgba(216,98,44,.28)" stroke-width="1"/>
+          <text x="36" y="176" font-family="Space Mono,monospace" font-size="8" fill="#d8622c" text-anchor="middle">More</text>
+          <text x="36" y="188" font-family="Space Mono,monospace" font-size="8" fill="#d8622c" text-anchor="middle">Data</text>
+          <!-- arcs -->
+          <path d="M196 25 A155 155 0 0 1 299 69" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <path d="M340 111 A155 155 0 0 1 340 249" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <path d="M300 295 A155 155 0 0 1 200 337" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <path d="M155 333 A155 155 0 0 1 48 204" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <path d="M40 155 A155 155 0 0 1 166 27" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" marker-end="url(#arrow)"/>
+          <defs>
+            <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="rgba(255,255,255,0.18)"/>
+            </marker>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WOW MOMENT -->
+<section class="wow-sec" id="demo">
+  <div class="wow-in">
+    <span class="wow-tag">The Demo Moment</span>
+    <blockquote class="wow-q">
+      "Wait — you're telling me that if I had been using this six weeks ago,
+      you would have flagged the Braeburn Logistics cluster before that fourth worker even came in?"
+    </blockquote>
+    <p class="wow-ctx">
+      You're in the demo. You open the injury pattern screen and reconstruct a real scenario from anonymized workers' comp data.
+      Three back injuries. Same warehouse bay. Same shift rotation. Archvex drew a red thread at injury number two
+      and sent an alert to the safety director. The fourth injury — the one that became a $340,000 claim and an OSHA inspection — didn't have to happen.
+      The clinic director isn't thinking about software anymore. She's thinking about the lawsuit she almost walked into last year.
+      <br><br>
+      <strong>That's the close. You don't sell features. You sell the claim that didn't happen.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="darker founder-section" id="team" style="padding:7rem 0;">
+  <div class="container">
+    <div class="fdr-wrap">
+      <div class="fdr-card fu">
+        <div class="fdr-init">KJ</div>
+        <div class="fdr-name">Kush Jain</div>
+        <div class="fdr-role">Founder &amp; CEO</div>
+        <div class="fdr-co">ARCHVEX</div>
+      </div>
+      <div class="fdr-mission fu" style="transition-delay:.07s">
+        <div class="s-tag">From the Founder</div>
+        <h2>Built for the clinic<br>that's tired of waiting.</h2>
+        <p>Occupational health clinics sit at the intersection of clinical care, legal compliance, and employer liability. They're the most documentation-dense, least-digitized node in the entire employer-health ecosystem — and they've been waiting two decades for something that actually fits how physicians work.</p>
+        <p>Archvex isn't an EMR replacement. It's the intelligence layer that sits on top of what clinics already have, reads what physicians already write, and does the part that nobody should be doing by hand: the FFD letter, the employer notification, the pattern that nobody saw building in the data.</p>
+        <p><em>"We're not selling software. We're selling back the 10 hours a day your physicians lose to paperwork — and the lawsuit that's quietly building in your EMR right now."</em></p>
+        <div class="fdr-cta">
+          <a href="mailto:hello@archvex.com" class="btn-p" id="contact">Request a Demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="ft-in">
+      <div class="ft-logo">ARCH<b>V</b>EX</div>
+      <div class="ft-links">
+        <a href="#problem">Problem</a>
+        <a href="#product">Product</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="ft-copy">© 2025 Archvex · Built for the occ health clinic that's done waiting</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function(){
+    nav.classList.toggle('s', window.scrollY > 50);
+  }, { passive: true });
+
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fu').forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
